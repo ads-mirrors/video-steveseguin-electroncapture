@@ -1,0 +1,128 @@
+{
+  "name": "VDON.Electron.Capture.App",
+  "version": "2.17.0",
+  "description": "A simple tool to aid with frameless window video capture and VDON publishing",
+  "author": "Steve Seguin <steve@seguin.email>",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "run-os",
+    "build:win32": "electron-builder --win",
+    "build:darwin": "electron-builder --mac --universal",
+    "build:linux": "electron-builder --linux",
+    "build:rpi": "USE_SYSTEM_FPM=true electron-builder --armv7l --linux deb",
+    "clean": "rimraf ./dist",
+    "release": "electron-builder --publish always"
+  },
+  "build": {
+    "appId": "capture.electron",
+    "productName": "ElectronCapture",
+    "files": [
+      "**/*",
+      "build/Release/*",
+      "assets/icons/*.*",
+      "assets/icons/mac/*.*",
+      "assets/icons/png/*.*",
+      "assets/icons/win/*.*"
+    ],
+    "mac": {
+      "category": "public.build.automation",
+      "icon": "assets/icons/mac/icon.ico",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "entitlements": "./build/entitlements.mac.inherit.plist",
+      "extendInfo": {
+        "NSCameraUsageDescription": "This app requires camera access to record video.",
+        "NSMicrophoneUsageDescription": "This app requires microphone access to record audio."
+      }
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 440,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "artifactName": "elecap-${version}.${ext}",
+      "writeUpdateInfo": false
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "ia32",
+            "x64",
+	    "arm64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/win/icon.ico"
+    },
+    "linux": {
+      "category": "public.build.automation",
+      "icon": "assets/icons/png/256x256.png",
+      "target": "AppImage"
+    },
+    "nsis": {
+      "runAfterFinish": true,
+      "installerIcon": "assets/icons/win/icon.ico",
+      "artifactName": "elecap-${version}.${ext}",
+      "differentialPackage": false
+    },
+    "portable": {
+      "artifactName": "elecap.exe",
+      "requestExecutionLevel": "user",
+      "unpackDirName": true
+    },
+    "appx": {
+      "applicationId": "elecap",
+      "backgroundColor": "#464646",
+      "identityName": "elecap",
+      "publisherDisplayName": "Steve Seguin",
+      "artifactName": "elecap-${version}.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
+    ],
+    "afterSign": "./afterSign.js"
+  },
+  "devDependencies": {
+    "electron": "^21.3.3",
+    "electron-builder": "^23.3.3",
+    "electron-notarize": "^1.2.1",
+    "rimraf": "^3.0.2",
+    "run-script-os-fix": "^1.0.4"
+  },
+  "dependencies": {
+    "electron-context-menu": "^3.5.0",
+    "electron-is-dev": "^2.0.0",
+    "electron-prompt": "^1.7.0",
+    "electron-unhandled": "^4.0.1",
+    "minimalist": "^1.0.0",
+    "minimist": "github:fortiZde/minimist",
+    "yargs": "^17.5.1"
+  },
+  "engines": {
+    "node": "v16.*.*",
+    "npm": "8.*.*"
+  }
+}
